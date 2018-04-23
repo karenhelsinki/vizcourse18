@@ -6,7 +6,7 @@
     stroke: #888;
     stroke-linejoin: round;
   }
-  svg {
+  #map svg {
     border-style: solid;
     border-width: 1px;
     border-color: #ccc;
