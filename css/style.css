@@ -1,3 +1,6 @@
+  #map {
+    position: relative;
+  }
   .boundary {
     fill: #ddd;
     stroke: #888;

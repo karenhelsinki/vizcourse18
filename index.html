@@ -6,19 +6,22 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="map"></div>
-  <div id="tooltip"></div>
-  <div id="legend">
-    <h2 id="year">1955</h2>
-    <p><span id="worldPopNum">3.5</span><span> billion</span></p>
+  <div id="content">
+    <h1>Top 30 cities in the world 1955-2015</h1>
+    <div id="map">
+      <div id="tooltip"></div>
+      <div id="legend">
+        <h2 id="year">1955</h2>
+        <p><span id="worldPopNum">3.5</span><span> billion</span></p>
+      </div>
+      <div id="sliderArea"></div>
+    </div>
+    <span id="inputArea">
+      <input type="text" id="inputYear" />
+      <input type="button" id="changeYearBtn" value="Change year" />
+    </span>
   </div>
-  <span id="inputArea">
-    <input type="text" id="inputYear" />
-    <input type="button" id="changeYearBtn" value="Change year" />
-  </span>
   <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
   <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.js"></script>
   <script src="js/main.js"></script>
 </body>
-
-<!-- Country color could represent proportion of the global population at the time -->
