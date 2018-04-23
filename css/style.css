@@ -40,3 +40,19 @@
     top: 450px;
     left: 50px;
   }
+  #sliderBox {
+    display: block;
+    position: relative;
+    clear: both;
+  }
+  #sliderBox input {
+    float: left;
+    display: block;
+    margin-top:30px;
+  }
+  #slider {
+    float: left;
+  }
+  #inputArea {
+    clear:both;
+  }

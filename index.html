@@ -14,14 +14,19 @@
         <h2 id="year">1955</h2>
         <p><span id="worldPopNum">3.5</span><span> billion</span></p>
       </div>
-      <div id="sliderArea"></div>
     </div>
-    <span id="inputArea">
+    <div id="sliderBox">
+      <input type='button' value='Previous Year' id='prevYearBtn' />
+      <div id="slider"></div>
+      <input type='button' value='Next Year' id='nextYearBtn' />
+    </div>
+    <div id="inputArea">
       <input type="text" id="inputYear" />
       <input type="button" id="changeYearBtn" value="Change year" />
-    </span>
+    </div>
   </div>
   <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
   <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.js"></script>
+  <script src="https://unpkg.com/d3-simple-slider"></script>
   <script src="js/main.js"></script>
 </body>

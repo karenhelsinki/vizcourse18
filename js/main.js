@@ -8,6 +8,9 @@
       theworld = void 0;
       countryData = void 0;
       cityData = void 0;
+      yearData = void 0;
+      minYear = 1955
+      maxYear = 2015
 
   // Special d3 helper that converts geo coordinates to paths
   // based on a projection 
@@ -22,13 +25,13 @@
     //console.log('d', d, 'event', d3.event);
     var div = document.getElementById('tooltip');
     // d3.event is the current event
-    div.style.left = d3.event.pageX +'px'; 
-    div.style.top = d3.event.pageY + 'px';
+    div.style.left = d3.event.x +'px'; 
+    div.style.top = d3.event.y + 'px';
     div.innerHTML = d.city;
   };
 
   var showMap = function(data) {
-    console.log('theworld', data);
+    //console.log('theworld', data);
     // Get the "polygon" data for all countries
     var countries = topojson.feature(data, data.objects.countries);
     //console.log('countries', countries)
@@ -82,8 +85,8 @@
     var cityPoints = svg.selectAll('circle').data(data.cities[year]);
     var cityText = svg.selectAll('text').data(data.cities[year]);
 
-    console.log(svg)
-    console.log(data.cities[year])
+    //console.log(svg)
+    //console.log(data.cities[year])
 
     cityPoints.exit().remove();
 
@@ -115,13 +118,19 @@
       .on('mouseover', hoverTooltip);
   };
 
+  var updateInfoLegend = function(data, year) {
+    d3.select("#year").text(year);
+  };
+
   var showTheWorld = function(data) {
     countryData = data[0]
     cityData = data[1]
+    yearData = data[1].years
     //console.log('countryData', countryData);
     //console.log('cityData', cityData);
     showMap(countryData);
-    updateCities(cityData, '1955');
+    updateCities(cityData, minYear);
+    updateInfoLegend(yearData, minYear);
   };
 
   // Define which files we need to load:
@@ -136,9 +145,51 @@
   // Show the map once all the jsons are loaded:
   Promise.all(promises).then(showTheWorld);
 
+  var slider = d3.sliderHorizontal()
+    .min(minYear)
+    .max(maxYear)
+    .step(5)
+    .width(800)
+    .displayValue(false)
+    .default(minYear)
+    .tickFormat(d3.format(".0f"))
+    .on('onchange', val => {
+      updateCities(cityData, val);
+      updateInfoLegend(yearData, val);
+    })
+
+  d3.select("#slider").append("svg")
+    .attr("width", 850)
+    .attr("height", 80)
+    .append("g")
+    .attr("transform", "translate(30,30)")
+    .call(slider);
+
   var yearChanger = d3.select("#changeYearBtn")
-    .on('click', function(){ 
-      var year = document.getElementById("inputYear").value;
-      updateCities(cityData, year);
-    });
+  .on('click', function(){ 
+    var year = document.getElementById("inputYear").value;
+    //updateCities(cityData, year);
+    //updateInfoLegend(yearData, year);
+    slider.value(year);
+  });
+
+  var slideNext = function() {
+    var val = slider.value();
+    if (val < maxYear) {
+      slider.value(val+5);
+    }
+  };
+
+  var slidePrev = function() {
+    var val = slider.value();
+    if (val > minYear) {
+      slider.value(val-5);
+    }
+  }
+
+  d3.select('#nextYearBtn')
+    .on('click', slideNext);
+
+  d3.select('#prevYearBtn')
+    .on('click', slidePrev);
 })();
