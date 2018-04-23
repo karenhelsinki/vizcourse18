@@ -23,10 +23,24 @@
     fill-opacity: 0.6;
     stroke: #ccc;
   }
+  #tooltip{
+    position: absolute;
+    z-index: 2;
+    background: rgba(0,153,76,0.8);
+    width:130px;
+    height:20px;
+    color:white;
+    font-size: 14px;
+    padding:5px;
+    top:-150px;
+    left:-150px;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
+  <div id="tooltip"></div>
   <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
   <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.js"></script>
 
@@ -49,6 +63,14 @@
           .attr("width", width)
           .attr("height", height);
 
+      var hoverTooltip = function(d) {
+        console.log('d', d, 'event', d3.event);
+        var div = document.getElementById('tooltip');
+        // d3.event is the current event
+        div.style.left = d3.event.pageX +'px'; 
+        div.style.top = d3.event.pageY + 'px';
+        div.innerHTML = d.name;
+      };
       // TODO:
       // Draw a legend box
       // Convert on load things to more elegant function
@@ -58,7 +80,7 @@
         console.log('theworld', data);
         // Get the "polygon" data for all countries
         var countries = topojson.feature(data, data.objects.countries);
-
+        console.log('countries', countries)
         // Setup the scale and translate
         var b, s, t; // bounds, scale, translate?
         projection.scale(1).translate([0, 0]);
@@ -70,7 +92,7 @@
         
         // Need to add padding to translation
         var vpadding = 0.05
-        var hpadding = -0.06
+        var hpadding = -0.05
         var t = [hpadding * width + (width - s * (b[1][0] + b[0][0])) / 2, vpadding*height + (height - s * (b[1][1] + b[0][1])) / 2];
         console.log("s:", s)
         console.log("t:", t)
@@ -102,7 +124,6 @@
 
         //Exit - not used at the momeent
         theworld.exit().remove();
-
         d3.csv('data/cities_1950.csv').then(function(cities){
           var cityPoints = svg.selectAll('circle').data(cities);
           var cityText = svg.selectAll('text').data(cities);
@@ -120,7 +141,8 @@
             .attr('r', function(d) {
               return Math.sqrt(Math.floor(200*d.pop)/Math.PI)
             })
-            .attr('fill', 'red');
+            .attr('fill', 'red')
+            .on('mouseover', hoverTooltip);
 
           cityText.enter()
             .append('text')
@@ -134,9 +156,10 @@
             .attr('dy', 3)
             //.text(function(d) {return d.name});
         });
+
+
       });
-
-
+    
 
     })();
   </script>
