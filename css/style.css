@@ -1,62 +1,69 @@
-  #map {
-    position: relative;
-  }
-  .boundary {
-    fill: #ddd;
-    stroke: #888;
-    stroke-linejoin: round;
-  }
-  #map svg {
-    border-style: solid;
-    border-width: 1px;
-    border-color: #ccc;
-  }
-  text{ 
-    font-family: Helvetica; 
-    font-weight: 300; 
-    font-size: 12px; 
-  } 
-  circle {
-    fill-opacity: 0.6;
-    stroke: #ccc;
-  }
-  #tooltip {
-    position: absolute;
-    z-index: 2;
-    background: rgba(0,153,76,0.8);
-    color:white;
-    font-size: 12px;
-    padding:5px;
-    top:-150px;
-    left:-150px;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  }
-  #legend {
-    position: absolute;
-    z-index: 2;
-    background: white;
-    top: 450px;
-    left: 50px;
-  }
-  #sliderBox {
-    display: block;
-    position: relative;
-    clear: both;
-  }
-  #sliderBox input {
-    float: left;
-    display: block;
-    margin-top:30px;
-  }
-  #slider {
-    float: left;
-  }
-  #inputArea {
-    clear:both;
-  }
-  #Crit {
-    text-align:left;
-  }
-  #Data {
-    text-align:right;
-  }
+html {
+    display: table;
+    margin: auto;
+}
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
+#map {
+  position: relative;
+}
+.boundary {
+  fill: #ddd;
+  stroke: #888;
+  stroke-linejoin: round;
+}
+#map svg {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #ccc;
+}
+text{ 
+  font-family: Helvetica; 
+  font-weight: 300; 
+  font-size: 12px; 
+} 
+circle {
+  fill-opacity: 0.6;
+  stroke: #ccc;
+}
+#tooltip {
+  position: absolute;
+  z-index: 2;
+  background: rgba(0,153,76,0.8);
+  color:white;
+  font-size: 12px;
+  padding:5px;
+  top:-150px;
+  left:-150px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+#legend {
+  position: absolute;
+  z-index: 2;
+  top: 425px;
+  left: 25px;
+}
+#sliderBox {
+  display: block;
+  position: relative;
+  clear: both;
+}
+#sliderBox input {
+  float: left;
+  display: block;
+  margin-top:30px;
+}
+#slider {
+  float: left;
+}
+#inputArea {
+  clear:both;
+}
+#Crit {
+  text-align:left;
+}
+#Data {
+  text-align:right;
+}

@@ -1,6 +1,6 @@
 (function() {
   // Width and height are the regular pixel width and height
-  var height = 600,
+  var height = 575,
       width = 1000,
       // Mercator usually the default projection from 3d space to (x,y)
       // coordinates
@@ -45,7 +45,7 @@
     var s = 1.1 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
     
     // Need to add padding to translation
-    var vpadding = 0.05
+    var vpadding = 0.025
     var hpadding = -0.05
     var t = [hpadding * width + (width - s * (b[1][0] + b[0][0])) / 2, vpadding*height + (height - s * (b[1][1] + b[0][1])) / 2];
     //console.log("s:", s)
@@ -154,7 +154,7 @@
     .min(minYear)
     .max(maxYear)
     .step(5)
-    .width(800)
+    .width(775)
     .displayValue(false)
     .default(minYear)
     .tickFormat(d3.format(".0f"))
@@ -164,7 +164,7 @@
     })
 
   d3.select("#slider").append("svg")
-    .attr("width", 850)
+    .attr("width", 825)
     .attr("height", 80)
     .append("g")
     .attr("transform", "translate(30,30)")
