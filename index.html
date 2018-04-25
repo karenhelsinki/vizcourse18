@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <title>The World</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
   <div id="content">
@@ -11,8 +14,24 @@
     <div id="map">
       <div id="tooltip"></div>
       <div id="legend">
-        <h2 id="year">1955</h2>
-        <p><span id="worldPopNum">3.5</span><span> billion</span></p>
+	<table class="table">
+    		<thead>
+      			<tr>
+        			<th id="Crit">Criteria</th>
+        			<th id="Data">Data</th>
+      			</tr>
+    		</thead>
+    		<tbody>
+      			<tr>
+        			<td id="Crit">Year: </td>
+        			<td id="Data"><span id="year">1955</span></td>
+      			</tr>
+			<tr>
+        			<td id="Crit">Population: </td>
+        			<td id="Data"><span id="worldPopNum">3.5</span><span> billion</span></td>
+      			</tr>
+    		</tbody>
+  	</table>
       </div>
     </div>
     <div id="sliderBox">
@@ -29,4 +48,5 @@
   <script src="https://unpkg.com/topojson@3.0.2/dist/topojson.js"></script>
   <script src="https://unpkg.com/d3-simple-slider"></script>
   <script src="js/main.js"></script>
+  
 </body>

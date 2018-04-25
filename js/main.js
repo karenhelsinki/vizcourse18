@@ -27,7 +27,7 @@
     // d3.event is the current event
     div.style.left = d3.event.x +'px'; 
     div.style.top = d3.event.y + 'px';
-    div.innerHTML = d.city;
+    div.innerHTML = "City: "+d.city+" - "+d.country+"<BR/>Raw Pop: "+d.raw_pop+" Millions"+"<BR/>Norm Pop :"+d.nom_pop;
   };
 
   var showMap = function(data) {
@@ -120,6 +120,11 @@
 
   var updateInfoLegend = function(data, year) {
     d3.select("#year").text(year);
+    data.forEach(function(Item){
+	if (Item.year==year){
+		d3.select("#worldPopNum").text(Item.world_pop);
+	}
+    })
   };
 
   var showTheWorld = function(data) {
