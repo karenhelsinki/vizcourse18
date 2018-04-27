@@ -1,84 +1,93 @@
-  html {
-    display: table;
-    margin: auto;
-  }
-  body {
-    display: table-cell;
-    vertical-align: middle;
-  }
-  #map {
-    position: relative;
-  }
-  .boundary {
-    fill: #ddd;
-    stroke: #888;
-    stroke-linejoin: round;
-  }
-  #map svg {
-    border-style: solid;
-    border-width: 1px;
-    border-color: #ccc;
-  }
-  text{ 
-    font-family: Helvetica; 
-    font-weight: 300; 
-    font-size: 12px; 
-  } 
-  circle {
-    fill-opacity: 0.6;
-    stroke: #ccc;
-  }
-  #tooltip {
-    position: absolute;
-    z-index: 2;
-    background: rgba(0,153,76,0.8);
-    color:white;
-    font-size: 12px;
-    padding:5px;
-    top:-150px;
-    left:-150px;
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  }
-  #legend {
-    position: absolute;
-    z-index: 2;
-    top: 350px;
-    left: 10px;
-    opacity: 0.6;
-    filter: alpha(opacity=60);
-    font-size: 8px;
-  }
-  #sliderBox {
-    display: block;
-    position: relative;
-    clear: both;
-  }
-  #sliderBox input {
-    float: left;
-    display: block;
-    margin-top:30px;
-  }
-  #slider {
-    float: left;
-  }
-  #inputArea {
-    clear:both;
-  }
-  .Crit {
-    text-align:left;
-  }
-  .Data {
-    text-align:right;
-  }
+html {
+  display: table;
+  margin: auto;
+}
+body {
+  display: table-cell;
+  vertical-align: middle;
+}
+#map {
+  position: relative;
+}
+.boundary {
+  fill: #ddd;
+  stroke: #888;
+  stroke-linejoin: round;
+}
+#map svg {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #ccc;
+}
+text{ 
+  font-family: Helvetica; 
+  font-weight: 300; 
+  font-size: 12px; 
+} 
+circle {
+  fill-opacity: 0.6;
+  stroke: #ccc;
+}
+#tooltip {
+  position: absolute;
+  z-index: 2;
+  background: rgba(0,153,76,0.8);
+  color:white;
+  font-size: 12px;
+  padding:5px;
+  top:-150px;
+  left:-150px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
 
-  .Sub_Crit {
-    text-indent:20px;
-  }
+#sliderBox {
+  display: block;
+  position: relative;
+  clear: both;
+}
+#sliderBox input {
+  float: left;
+  display: block;
+  margin-top:30px;
+}
+#slider {
+  float: left;
+}
+#inputArea {
+  display: none;
+  clear:both;
+}
 
-  .Crit_Sub {
-     font-weight: bold;
-     border-bottom: 2px solid #ddd;
-  }
-  .hor_hist {
-    float: left;
-  }
+/* Legend styles */
+#legend {
+  position: absolute;
+  z-index: 2;
+  top: 350px;
+  left: 10px;
+  font-size: 10px;
+}
+#legend h1 {
+  color: #888;
+}
+.Crit {
+  text-align:left;
+}
+.Data {
+  text-align:right;
+}
+.Sub_Crit {
+  text-indent:10px;
+}
+.Crit_Sub {
+   font-weight: bold;
+   border-bottom: 2px solid #ddd;
+}
+
+/* Histogram styles */
+.hor_hist {
+  float: left;
+}
+#hor_hist_container h1 {
+  text-align: center;
+  color: #888;
+}

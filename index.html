@@ -17,29 +17,17 @@
       <div id="map">
         <div id="tooltip"></div>
         <div id="legend">
-  	<table class="table">
-      		<thead>
-        			<tr>
-          			<th class="Crit">CRITERIA</th>
-          			<th class="Data">DATA</th>
-        			</tr>
-      		</thead>
+          <h1></h1>
+  	      <table class="table">
               <tbody>
-                  <tr>
-                      <td class="Crit Crit_No_Sub">Year: </td>
-                      <td class="Data"><span id="year"></span></td>
-                  </tr>
-                  <tr>
+                  <tr class="Crit_Sub">
                       <td class="Crit">Population: </td>
                       <td class="Data"><span id="worldPopNum"></span><span> billion</span></td>
                   </tr>
                   <tr class="Crit_Sub">
-                      <td class="Crit">Urban Population: </td>
-                      <td class="Data"><span id="urbanPopNum"></span> billion</td>
-                  </tr>
-                  <tr>
-                      <td class="Crit Sub_Crit">%Urban/World: </td>
-                      <td class="Data"><span id="urbanRate"></span>%</td>
+                      <td class="Crit">Live in cities: </td>
+                      <td class="Data"><span id="urbanPopNum"></span> billion or 
+                      <span id="urbanRate"></span>%</td>
                   </tr>
                   <tr class="Crit_Sub">
                       <td class="Crit">Top 30 Cities: </td>
@@ -47,14 +35,14 @@
                   </tr>
                   <tr>
                       <td class="Crit Sub_Crit">%Top 30/Urban: </td>
-                      <td class="Data"><span id="topRate"></span>%</td>
+                      <td class="Data"><span id="topUrbanRate"></span>%</td>
                   </tr>
                   <tr>
                       <td class="Crit Sub_Crit">%Top 30/World: </td>
-                      <td class="Data"><span id="topurbanRate"></span>%</td>
+                      <td class="Data"><span id="topRate"></span>%</td>
                   </tr>
               </tbody>
-    	</table>
+    	       </table>
         </div>
       </div>
       <div id="sliderBox">
@@ -69,7 +57,6 @@
     </div>
   </div>
   <div id="hor_hist_view">
-    <h1>Top 30 cities in the world 1955-2015</h1>
     <div id="hor_hist_container">
     </div>
   </div>

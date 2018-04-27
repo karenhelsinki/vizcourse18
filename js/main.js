@@ -112,7 +112,7 @@
       .attr('r', function(d) {
         return Math.sqrt(Math.floor(200*d.raw_pop)/Math.PI)
       })
-      .attr('fill', 'red')
+      .attr('fill', 'green')
       .on('mouseover', hoverTooltip);
 
     cityPoints
@@ -125,27 +125,31 @@
       .attr('r', function(d) {
         return Math.sqrt(Math.floor(200*d.raw_pop)/Math.PI)
       })
-      .attr('fill', 'red')
+      .attr('fill', 'green')
       .on('mouseover', hoverTooltip);
   };
 
   var updateInfoLegend = function(data, year) {
-    d3.select("#year").text(year);
-    data.forEach(function(Item){
-	if (Item.year==year){
-		urbanRate=Item.urban_pop/Item.world_pop*100
-		topRate=Item.top_pop/Item.world_pop/10
-		topurbanRate=Item.top_pop/Item.urban_pop/10
+    d3.select("#legend > h1").text(year);
 
-		d3.select("#worldPopNum").text(Item.world_pop);
-		d3.select("#urbanPopNum").text(Item.urban_pop);
-		d3.select("#topPopNum").text(Item.top_pop)
+    currentYear = data[(year-minYear)/5]
+
+    // How many people live in the cities?
+		urbanRate = 100 * currentYear.urban_pop / currentYear.world_pop
+
+    // Top 30 cities as proportion of all population
+		top30WorldRate = currentYear.top_pop / (currentYear.world_pop*10)
+
+    // Top 30 cities as proportion of all cities
+		top30UrbanRate = currentYear.top_pop / (currentYear.urban_pop*10)
+
+		d3.select("#worldPopNum").text(currentYear.world_pop);
+		d3.select("#urbanPopNum").text(currentYear.urban_pop);
+		d3.select("#topPopNum").text(currentYear.top_pop)
 
 		d3.select("#urbanRate").text(urbanRate.toFixed(2))
-		d3.select("#topRate").text(topRate.toFixed(2))
-		d3.select("#topurbanRate").text(topurbanRate.toFixed(2))
-	}
-    })
+		d3.select("#topRate").text(top30WorldRate.toFixed(2))
+		d3.select("#topUrbanRate").text(top30UrbanRate.toFixed(2))
   };
 
   var showTheWorld = function(data) {
@@ -222,7 +226,7 @@
       .attr('width', 500)
       .attr('height', 600)
 
-    let margin = {top: 50, right: 50, bottom: 40, left: 220},
+    let margin = {top: 25, right: 50, bottom: 25, left: 220},
       width_2 = svg_2.attr("width") - margin.left - margin.right,
       height_2 = svg_2.attr("height") - margin.top - margin.bottom,
       g = svg_2.append("g").attr("transform", "translate(" + margin.left + "," +margin.top + ")");
