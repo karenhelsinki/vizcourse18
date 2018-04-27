@@ -112,7 +112,7 @@
       .attr('r', function(d) {
         return Math.sqrt(Math.floor(200*d.raw_pop)/Math.PI)
       })
-      .attr('fill', 'green')
+      .attr('fill', '#556b2f')
       .on('mouseover', hoverTooltip);
 
     cityPoints
@@ -125,7 +125,7 @@
       .attr('r', function(d) {
         return Math.sqrt(Math.floor(200*d.raw_pop)/Math.PI)
       })
-      .attr('fill', 'green')
+      .attr('fill', '#556b2f')
       .on('mouseover', hoverTooltip);
   };
 
