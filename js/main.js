@@ -1,6 +1,6 @@
 (function() {
   // Width and height are the regular pixel width and height
-  var height = 575,
+  var height = 600,
       width = 1000,
       // Mercator usually the default projection from 3d space to (x,y)
       // coordinates
@@ -24,10 +24,21 @@
   var hoverTooltip = function(d) {
     //console.log('d', d, 'event', d3.event);
     var div = document.getElementById('tooltip');
+    var urban_pop=Number($("#urbanPopNum").text())*1000
+    var top_pop=Number($("#topPopNum").text())
+    var urban_rate=d.raw_pop/urban_pop*100
+    var top_rate=d.raw_pop/top_pop*100
+
     // d3.event is the current event
-    div.style.left = d3.event.x +'px'; 
-    div.style.top = d3.event.y + 'px';
-    div.innerHTML = "City: "+d.city+" - "+d.country+"<BR/>Raw Pop: "+d.raw_pop+" Millions"+"<BR/>Norm Pop :"+d.nom_pop;
+    var relative_pos=$("#map").position()
+    div.style.left = d3.event.x - relative_pos.left +'px'; 
+    div.style.top = d3.event.y - relative_pos.top + 'px'; 
+    div.innerHTML = "City: "+d.city+" - "+d.country+"<BR/>Raw Pop: "+d.raw_pop+" Millions"+"<BR/>Norm Pop :"+d.norm_pop+"<BR/>Raw Pop/Urban Pop :"+urban_rate.toFixed(2)+"%<BR/>Raw Pop/Top 30 Pop :"+top_rate.toFixed(2)+"%";
+  };
+
+  var leaveTooltip = function(d) {
+    $("#tooltip").html('');
+    $("#tooltip").attr('style','');
   };
 
   var showMap = function(data) {
@@ -45,7 +56,7 @@
     var s = 1.1 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
     
     // Need to add padding to translation
-    var vpadding = 0.025
+    var vpadding = 0.05
     var hpadding = -0.05
     var t = [hpadding * width + (width - s * (b[1][0] + b[0][0])) / 2, vpadding*height + (height - s * (b[1][1] + b[0][1])) / 2];
     //console.log("s:", s)
@@ -122,7 +133,17 @@
     d3.select("#year").text(year);
     data.forEach(function(Item){
 	if (Item.year==year){
+		urbanRate=Item.urban_pop/Item.world_pop*100
+		topRate=Item.top_pop/Item.world_pop/10
+		topurbanRate=Item.top_pop/Item.urban_pop/10
+
 		d3.select("#worldPopNum").text(Item.world_pop);
+		d3.select("#urbanPopNum").text(Item.urban_pop);
+		d3.select("#topPopNum").text(Item.top_pop)
+
+		d3.select("#urbanRate").text(urbanRate.toFixed(2))
+		d3.select("#topRate").text(topRate.toFixed(2))
+		d3.select("#topurbanRate").text(topurbanRate.toFixed(2))
 	}
     })
   };
@@ -154,7 +175,7 @@
     .min(minYear)
     .max(maxYear)
     .step(5)
-    .width(775)
+    .width(800)
     .displayValue(false)
     .default(minYear)
     .tickFormat(d3.format(".0f"))
@@ -164,7 +185,7 @@
     })
 
   d3.select("#slider").append("svg")
-    .attr("width", 825)
+    .attr("width", 850)
     .attr("height", 80)
     .append("g")
     .attr("transform", "translate(30,30)")

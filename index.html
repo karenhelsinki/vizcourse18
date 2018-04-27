@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -17,20 +17,40 @@
 	<table class="table">
     		<thead>
       			<tr>
-        			<th id="Crit">Criteria</th>
-        			<th id="Data">Data</th>
+        			<th class="Crit">CRITERIA</th>
+        			<th class="Data">DATA</th>
       			</tr>
     		</thead>
-    		<tbody>
-      			<tr>
-        			<td id="Crit">Year: </td>
-        			<td id="Data"><span id="year">1955</span></td>
-      			</tr>
-			<tr>
-        			<td id="Crit">Population: </td>
-        			<td id="Data"><span id="worldPopNum">3.5</span><span> billion</span></td>
-      			</tr>
-    		</tbody>
+            <tbody>
+                <tr>
+                    <td class="Crit Crit_No_Sub">Year: </td>
+                    <td class="Data"><span id="year"></span></td>
+                </tr>
+                <tr>
+                    <td class="Crit">Population: </td>
+                    <td class="Data"><span id="worldPopNum"></span><span> billion</span></td>
+                </tr>
+                <tr class="Crit_Sub">
+                    <td class="Crit">Urban Population: </td>
+                    <td class="Data"><span id="urbanPopNum"></span> billion</td>
+                </tr>
+                <tr>
+                    <td class="Crit Sub_Crit">%Urban/World: </td>
+                    <td class="Data"><span id="urbanRate"></span>%</td>
+                </tr>
+                <tr class="Crit_Sub">
+                    <td class="Crit">Top 30 Cities: </td>
+                    <td class="Data"><span id="topPopNum"></span>  million</td>
+                </tr>
+                <tr>
+                    <td class="Crit Sub_Crit">%Top 30/Urban: </td>
+                    <td class="Data"><span id="topRate"></span>%</td>
+                </tr>
+                <tr>
+                    <td class="Crit Sub_Crit">%Top 30/World: </td>
+                    <td class="Data"><span id="topurbanRate"></span>%</td>
+                </tr>
+            </tbody>
   	</table>
       </div>
     </div>
