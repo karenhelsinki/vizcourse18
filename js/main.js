@@ -270,7 +270,7 @@
       .attr("y", function(d) { return y(d.city); })
       .attr("height", y.bandwidth())
       .attr("width", function(d) { return x(d.raw_pop); })
-      .style("fill", "#2ca25f");
+      .style("fill", "#556b2f");
   }
 
   var showHistograms = function(cityData){
