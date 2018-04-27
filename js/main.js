@@ -17,7 +17,7 @@
   var path = d3.geoPath().projection(projection);
 
   var svg = d3.select("#map")
-      .append("svg")
+      .append('svg')
       .attr("width", width)
       .attr("height", height);
 
@@ -157,19 +157,8 @@
     showMap(countryData);
     updateCities(cityData, minYear);
     updateInfoLegend(yearData, minYear);
+    showHistograms(cityData);
   };
-
-  // Define which files we need to load:
-  var dataPaths = ['data/110m.json', 'data/json_final.json']
-  var promises = [];
-
-  // Load the JSON files:
-  dataPaths.forEach(function(dataPath){
-    promises.push(d3.json(dataPath));
-  })
-
-  // Show the map once all the jsons are loaded:
-  Promise.all(promises).then(showTheWorld);
 
   var slider = d3.sliderHorizontal()
     .min(minYear)
@@ -218,4 +207,83 @@
 
   d3.select('#prevYearBtn')
     .on('click', slidePrev);
+
+  // Horizontal histograms:
+
+  var showHistogram = function(year) {
+    console.log('cityData', cityData)
+    var svg_container = d3.select("#hor_hist_container")
+      .append('div')
+      .attr('class', 'hor_hist')
+
+    svg_container.append('h1').text(year)
+    svg_2 = svg_container
+      .append('svg')
+      .attr('width', 500)
+      .attr('height', 600)
+
+    let margin = {top: 50, right: 50, bottom: 40, left: 220},
+      width_2 = svg_2.attr("width") - margin.left - margin.right,
+      height_2 = svg_2.attr("height") - margin.top - margin.bottom,
+      g = svg_2.append("g").attr("transform", "translate(" + margin.left + "," +margin.top + ")");
+
+
+    //define scales
+    let x = d3.scaleLinear().rangeRound([0, width_2]),
+      y = d3.scaleBand().rangeRound([height_2, 0]).padding(0.2);
+
+    //sort data
+    cityData.cities[year].sort(function(a,b) { return a.raw_pop - b.raw_pop; });
+
+    //define domains based on data
+    x.domain([0, d3.max(cityData.cities[year], function(d) { return d.raw_pop; })]);
+    y.domain(cityData.cities[year].map(function(d) { return d.city; }));
+
+    //append x axis to svg
+    g.append("g")
+      .attr("class", "x-axis")
+      .attr("transform", "translate(0," + height_2 + ")")
+      .call(d3.axisBottom(x))
+      .append("text")
+      .attr("y", 30)
+      .attr("x", 650)
+      .attr("dy", "0.5em")
+      .style("fill", "black")
+      .text("% of GDP");
+
+    //append y axis to svg
+    g.append("g")
+      .attr("class", "y-axis")
+      .call(d3.axisLeft(y));
+
+    //append rects to svg based on data
+    g.selectAll(".bar")
+      .data(cityData.cities[year])
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", 0)
+      .attr("y", function(d) { return y(d.city); })
+      .attr("height", y.bandwidth())
+      .attr("width", function(d) { return x(d.raw_pop); })
+      .style("fill", "#2ca25f");
+  }
+
+  var showHistograms = function(cityData){
+    Object.keys(cityData.cities).forEach(function(key, index){
+      showHistogram(key);
+    })
+  }
+
+  // Define which files we need to load:
+  var dataPaths = ['data/110m.json', 'data/json_final.json']
+  var promises = [];
+
+  // Load the JSON files:
+  dataPaths.forEach(function(dataPath){
+    promises.push(d3.json(dataPath));
+  })
+
+  // Show the map once all the jsons are loaded:
+  Promise.all(promises).then(showTheWorld);
 })();

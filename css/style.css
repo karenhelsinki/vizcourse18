@@ -79,3 +79,6 @@
      font-weight: bold;
      border-bottom: 2px solid #ddd;
   }
+  .hor_hist {
+    float: left;
+  }

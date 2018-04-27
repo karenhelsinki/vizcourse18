@@ -10,58 +10,67 @@
 </head>
 <body>
   <div id="content">
-    <h1>Top 30 cities in the world 1955-2015</h1>
-    <div id="map">
-      <div id="tooltip"></div>
-      <div id="legend">
-	<table class="table">
-    		<thead>
-      			<tr>
-        			<th class="Crit">CRITERIA</th>
-        			<th class="Data">DATA</th>
-      			</tr>
-    		</thead>
-            <tbody>
-                <tr>
-                    <td class="Crit Crit_No_Sub">Year: </td>
-                    <td class="Data"><span id="year"></span></td>
-                </tr>
-                <tr>
-                    <td class="Crit">Population: </td>
-                    <td class="Data"><span id="worldPopNum"></span><span> billion</span></td>
-                </tr>
-                <tr class="Crit_Sub">
-                    <td class="Crit">Urban Population: </td>
-                    <td class="Data"><span id="urbanPopNum"></span> billion</td>
-                </tr>
-                <tr>
-                    <td class="Crit Sub_Crit">%Urban/World: </td>
-                    <td class="Data"><span id="urbanRate"></span>%</td>
-                </tr>
-                <tr class="Crit_Sub">
-                    <td class="Crit">Top 30 Cities: </td>
-                    <td class="Data"><span id="topPopNum"></span>  million</td>
-                </tr>
-                <tr>
-                    <td class="Crit Sub_Crit">%Top 30/Urban: </td>
-                    <td class="Data"><span id="topRate"></span>%</td>
-                </tr>
-                <tr>
-                    <td class="Crit Sub_Crit">%Top 30/World: </td>
-                    <td class="Data"><span id="topurbanRate"></span>%</td>
-                </tr>
-            </tbody>
-  	</table>
+    <div id="tab_bar"></div>
+    <div id="map_view">
+
+      <h1>Top 30 cities in the world 1955-2015</h1>
+      <div id="map">
+        <div id="tooltip"></div>
+        <div id="legend">
+  	<table class="table">
+      		<thead>
+        			<tr>
+          			<th class="Crit">CRITERIA</th>
+          			<th class="Data">DATA</th>
+        			</tr>
+      		</thead>
+              <tbody>
+                  <tr>
+                      <td class="Crit Crit_No_Sub">Year: </td>
+                      <td class="Data"><span id="year"></span></td>
+                  </tr>
+                  <tr>
+                      <td class="Crit">Population: </td>
+                      <td class="Data"><span id="worldPopNum"></span><span> billion</span></td>
+                  </tr>
+                  <tr class="Crit_Sub">
+                      <td class="Crit">Urban Population: </td>
+                      <td class="Data"><span id="urbanPopNum"></span> billion</td>
+                  </tr>
+                  <tr>
+                      <td class="Crit Sub_Crit">%Urban/World: </td>
+                      <td class="Data"><span id="urbanRate"></span>%</td>
+                  </tr>
+                  <tr class="Crit_Sub">
+                      <td class="Crit">Top 30 Cities: </td>
+                      <td class="Data"><span id="topPopNum"></span>  million</td>
+                  </tr>
+                  <tr>
+                      <td class="Crit Sub_Crit">%Top 30/Urban: </td>
+                      <td class="Data"><span id="topRate"></span>%</td>
+                  </tr>
+                  <tr>
+                      <td class="Crit Sub_Crit">%Top 30/World: </td>
+                      <td class="Data"><span id="topurbanRate"></span>%</td>
+                  </tr>
+              </tbody>
+    	</table>
+        </div>
+      </div>
+      <div id="sliderBox">
+        <input type='button' value='Previous Year' id='prevYearBtn' />
+        <div id="slider"></div>
+        <input type='button' value='Next Year' id='nextYearBtn' />
+      </div>
+      <div id="inputArea">
+        <input type="text" id="inputYear" />
+        <input type="button" id="changeYearBtn" value="Change year" />
       </div>
     </div>
-    <div id="sliderBox">
-      <input type='button' value='Previous Year' id='prevYearBtn' />
-      <div id="slider"></div>
-      <input type='button' value='Next Year' id='nextYearBtn' />
-    </div>
-    <div id="inputArea">
-      <input type="text" id="inputYear" />
-      <input type="button" id="changeYearBtn" value="Change year" />
+  </div>
+  <div id="hor_hist_view">
+    <h1>Top 30 cities in the world 1955-2015</h1>
+    <div id="hor_hist_container">
     </div>
   </div>
   <script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
