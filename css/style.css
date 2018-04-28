@@ -6,6 +6,28 @@ body {
   display: table-cell;
   vertical-align: middle;
 }
+#global_view {
+  position: relative;
+  display: block;
+  float: left;
+}
+#tab_bar {
+  float: left;
+  display: block;
+}
+#tab_bar a {
+  position: relative;
+  top: 50px;
+  display: block;
+  clear:both;
+  margin: 20px 10px 10px 10px;
+}
+
+#tab_bar a:hover img {
+  opacity: 0.5;
+  cursor: pointer;
+}
+
 #map {
   position: relative;
 }
@@ -28,6 +50,11 @@ circle {
   fill-opacity: 0.6;
   stroke: #ccc;
 }
+
+circle:hover {
+  cursor: pointer;
+}
+
 #tooltip {
   position: absolute;
   z-index: 2;
@@ -62,9 +89,14 @@ circle {
 #legend {
   position: absolute;
   z-index: 2;
-  top: 350px;
-  left: 10px;
+  top: 400px;
   font-size: 10px;
+}
+#legend.left {
+  left: 10px;
+}
+#legend.right {
+  right: 70px;
 }
 #legend h1 {
   color: #888;
@@ -84,10 +116,6 @@ circle {
 }
 
 /* Histogram styles */
-.hor_hist {
-  float: left;
-}
-#hor_hist_container h1 {
-  text-align: center;
-  color: #888;
+#histogram {
+  display: none;
 }

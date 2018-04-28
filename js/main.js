@@ -16,13 +16,29 @@
   // based on a projection 
   var path = d3.geoPath().projection(projection);
 
-  var svg = d3.select("#map")
+  // Map stuff:
+  var map_svg = d3.select("#map")
       .append('svg')
       .attr("width", width)
       .attr("height", height);
 
+  // Histogram stuff:
+  var histogram_svg = d3.select("#histogram")
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+
+  let margin = {top: 25, right: 50, bottom: 25, left: 220},
+      width_2 = width - margin.left - margin.right,
+      height_2 = height - margin.top - margin.bottom,
+      hist_g = histogram_svg.append("g").attr("transform", "translate(" + margin.left + "," +margin.top + ")");
+
+  //define scales for histogram
+  let x = d3.scaleLinear().rangeRound([0, width_2]),
+    y = d3.scaleBand().rangeRound([height_2, 0]).padding(0.2);
+
   var hoverTooltip = function(d) {
-    //console.log('d', d, 'event', d3.event);
+    console.log('d', d, 'event', d3.event);
     var div = document.getElementById('tooltip');
     var urban_pop=Number($("#urbanPopNum").text())*1000
     var top_pop=Number($("#topPopNum").text())
@@ -30,9 +46,9 @@
     var top_rate=d.raw_pop/top_pop*100
 
     // d3.event is the current event
-    var relative_pos=$("#map").position()
-    div.style.left = d3.event.x - relative_pos.left +'px'; 
-    div.style.top = d3.event.y - relative_pos.top + 'px'; 
+    var relative_pos=$("#global_view").position()
+    div.style.left = d3.event.offsetX +'px'; 
+    div.style.top = d3.event.offsetY  + 'px'; 
     div.innerHTML = "City: "+d.city+" - "+d.country+"<BR/>Raw Pop: "+d.raw_pop+" Millions"+"<BR/>Norm Pop :"+d.norm_pop+"<BR/>Raw Pop/Urban Pop :"+urban_rate.toFixed(2)+"%<BR/>Raw Pop/Top 30 Pop :"+top_rate.toFixed(2)+"%";
   };
 
@@ -66,7 +82,7 @@
     projection.scale(s).translate(t);
 
     // Define map:
-    var map = svg.append('g').attr('class', 'boundary');
+    var map = map_svg.append('g').attr('class', 'boundary');
     // Add stuff to map:
     // we select all non-existent paths, telling d3 
     // to populate them
@@ -93,14 +109,15 @@
 
   var updateCities = function(data, year) {    
 
-    var cityPoints = svg.selectAll('circle').data(data.cities[year]);
-    var cityText = svg.selectAll('text').data(data.cities[year]);
+    var cityPoints = map_svg.selectAll('circle').data(data.cities[year]);
+    var cityText = map_svg.selectAll('text').data(data.cities[year]);
 
     //console.log(svg)
     //console.log(data.cities[year])
 
     cityPoints.exit().remove();
 
+    // Enter:
     cityPoints.enter() // remember - for each data point!
       .append('circle')
       .attr('cx', function(d) {
@@ -115,6 +132,7 @@
       .attr('fill', '#556b2f')
       .on('mouseover', hoverTooltip);
 
+    // Update:
     cityPoints
       .attr('cx', function(d) {
         return projection ([d.lon, d.lat])[0]
@@ -125,8 +143,6 @@
       .attr('r', function(d) {
         return Math.sqrt(Math.floor(200*d.raw_pop)/Math.PI)
       })
-      .attr('fill', '#556b2f')
-      .on('mouseover', hoverTooltip);
   };
 
   var updateInfoLegend = function(data, year) {
@@ -161,7 +177,7 @@
     showMap(countryData);
     updateCities(cityData, minYear);
     updateInfoLegend(yearData, minYear);
-    showHistograms(cityData);
+    updateHistogram(minYear);
   };
 
   var slider = d3.sliderHorizontal()
@@ -175,6 +191,7 @@
     .on('onchange', val => {
       updateCities(cityData, val);
       updateInfoLegend(yearData, val);
+      updateHistogram(val);
     })
 
   d3.select("#slider").append("svg")
@@ -212,39 +229,43 @@
   d3.select('#prevYearBtn')
     .on('click', slidePrev);
 
+  // Global mode selection:
+
+  d3.select('#map_button')
+    .on('click', function(){
+      d3.select("#map").style("display", 'block');
+      d3.select("#histogram").style("display", 'none');
+      d3.select("#legend").classed("left", true);
+      d3.select("#legend").classed("right", false);
+    });
+
+  d3.select('#hist_button')
+    .on('click', function(){
+      d3.select("#map").style("display", 'none');
+      d3.select("#histogram").style("display", 'block');
+      d3.select("#legend").classed("left", false);
+      d3.select("#legend").classed("right", true);
+    });
+
   // Horizontal histograms:
 
-  var showHistogram = function(year) {
-    console.log('cityData', cityData)
-    var svg_container = d3.select("#hor_hist_container")
-      .append('div')
-      .attr('class', 'hor_hist')
-
-    svg_container.append('h1').text(year)
-    svg_2 = svg_container
-      .append('svg')
-      .attr('width', 500)
-      .attr('height', 600)
-
-    let margin = {top: 25, right: 50, bottom: 25, left: 220},
-      width_2 = svg_2.attr("width") - margin.left - margin.right,
-      height_2 = svg_2.attr("height") - margin.top - margin.bottom,
-      g = svg_2.append("g").attr("transform", "translate(" + margin.left + "," +margin.top + ")");
-
-
-    //define scales
-    let x = d3.scaleLinear().rangeRound([0, width_2]),
-      y = d3.scaleBand().rangeRound([height_2, 0]).padding(0.2);
+  var updateHistogram = function(year) {
 
     //sort data
     cityData.cities[year].sort(function(a,b) { return a.raw_pop - b.raw_pop; });
+    
+    var cityBars = hist_g.selectAll('.bar').data(cityData.cities[year]);
 
     //define domains based on data
     x.domain([0, d3.max(cityData.cities[year], function(d) { return d.raw_pop; })]);
     y.domain(cityData.cities[year].map(function(d) { return d.city; }));
 
+    //cleanup old stuff:
+    cityBars.exit().remove();
+    hist_g.selectAll(".x-axis, .y-axis").remove();
+
     //append x axis to svg
-    g.append("g")
+    hist_g.append("g")
       .attr("class", "x-axis")
       .attr("transform", "translate(0," + height_2 + ")")
       .call(d3.axisBottom(x))
@@ -253,17 +274,14 @@
       .attr("x", 650)
       .attr("dy", "0.5em")
       .style("fill", "black")
-      .text("% of GDP");
 
     //append y axis to svg
-    g.append("g")
+    hist_g.append("g")
       .attr("class", "y-axis")
       .call(d3.axisLeft(y));
 
-    //append rects to svg based on data
-    g.selectAll(".bar")
-      .data(cityData.cities[year])
-      .enter()
+    // ENTER: append rects to svg based on data
+    cityBars.enter()
       .append("rect")
       .attr("class", "bar")
       .attr("x", 0)
@@ -271,12 +289,12 @@
       .attr("height", y.bandwidth())
       .attr("width", function(d) { return x(d.raw_pop); })
       .style("fill", "#556b2f");
-  }
 
-  var showHistograms = function(cityData){
-    Object.keys(cityData.cities).forEach(function(key, index){
-      showHistogram(key);
-    })
+    // UPDATE: update rects to svg based on data
+    cityBars
+      .attr("y", function(d) { return y(d.city); })
+      .attr("height", y.bandwidth())
+      .attr("width", function(d) { return x(d.raw_pop); })
   }
 
   // Define which files we need to load:
