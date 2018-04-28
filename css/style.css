@@ -22,7 +22,9 @@ body {
   clear:both;
   margin: 20px 10px 10px 10px;
 }
-
+#tab_bar a img {
+  opacity: 0.8;
+}
 #tab_bar a:hover img {
   opacity: 0.5;
   cursor: pointer;
@@ -98,7 +100,7 @@ circle:hover {
 #legend.right {
   right: 70px;
 }
-#legend h1 {
+#legend h1, #global_view h1{
   color: #888;
 }
 .Crit {
