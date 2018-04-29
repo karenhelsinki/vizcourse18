@@ -261,6 +261,7 @@
         d3.select("#histogram").style("display", 'none');
         d3.select("#birdview").style("display", 'none');
         d3.select("#legend").style("display", 'block');
+        d3.select("#sliderBox").style("display", 'block');
         d3.select("#map_button").style("background-color", "grey");
         d3.select("#hist_button").style("background-color", "");
         d3.select("#bird_button").style("background-color", "");
@@ -274,6 +275,7 @@
         d3.select("#histogram").style("display", 'block');
         d3.select("#birdview").style("display", 'none');
         d3.select("#legend").style("display", 'block');
+        d3.select("#sliderBox").style("display", 'block');
         d3.select("#map_button").style("background-color", "");
         d3.select("#hist_button").style("background-color", "grey");
         d3.select("#bird_button").style("background-color", "");
@@ -287,6 +289,7 @@
             d3.select("#histogram").style("display", 'none');
             d3.select("#birdview").style("display", 'block');
             d3.select("#legend").style("display", 'none');
+            d3.select("#sliderBox").style("display", 'none');
             d3.select("#map_button").style("background-color", "");
             d3.select("#hist_button").style("background-color", "");
             d3.select("#bird_button").style("background-color", "grey");
@@ -303,8 +306,7 @@
     };
 
     var showline = function (data) {
-        console.log('test', data);
-        yearData = data.years;
+        yearData = data.years.filter(x=>x.year >= minYear && x.year <= maxYear);
         min_pop = d3.min(yearData, function (d) { return Math.min(+d.urban_pop, +d.top_pop / 1000); });
         max_pop = d3.max(yearData, function (d) { return Math.max(+d.urban_pop, +d.top_pop / 1000); });
         t.domain(d3.extent(yearData, function (d) { return +d.year; }));
@@ -383,14 +385,13 @@
           .append("text")
           .attr("y", 30)
           .attr("x", 650)
-          .attr("dy", "0.5em")
-          .call(legend_styles({ "fill": "black", "font-weight": "bold" }));
-
+          .attr("dy", "0.5em");
+          
     //append y axis to svg
-    hist_g.append("g")
-      .attr("class", "y-axis")
-      .call(d3.axisLeft(y));
-
+      hist_g.append("g")
+          .attr("class", "y-axis")
+          .call(d3.axisLeft(y));
+    
     // ENTER: append rects to svg based on data
     cityBars.enter()
       .append("rect")
