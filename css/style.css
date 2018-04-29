@@ -45,7 +45,7 @@ body {
 }
 text{ 
   font-family: Helvetica; 
-  font-weight: 600; 
+  font-weight: 300; 
   font-size: 12px; 
 } 
 circle {
@@ -120,4 +120,19 @@ circle:hover {
 /* Histogram styles */
 #histogram {
   display: none;
+}
+
+#birdview {
+  display: none;
+}
+
+text.legend-color-text {
+  font-weight: 600; 
+  fill: #4e5ecf;
+  font-size: 14px; 
+}
+
+.y-axis>g>text {
+  font-weight: 600; 
+  font-size: 14px; 
 }

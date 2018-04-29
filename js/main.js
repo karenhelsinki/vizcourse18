@@ -42,9 +42,10 @@
         height_3 = height - margin_bird.top - margin_bird.bottom,
         bird_g = bird_svg.append("g").attr("transform", "translate(" + margin_bird.left + "," + margin_bird.top + ")");
 
-  //define scales for histogram
+  //define scales for histogram (x,y,colorScale) and linegraph(z,t)
     let x = d3.scaleLinear().rangeRound([0, width_2]),
         y = d3.scaleBand().rangeRound([height_2, 0]).padding(0.2),
+        colorScale = d3.scaleOrdinal(d3.schemeCategory10),
         z = d3.scaleLinear().rangeRound([height_3, 0]),
         t = d3.scaleLinear().rangeRound([0, width_3]);
 
@@ -191,8 +192,6 @@
     updateInfoLegend(yearData, minYear);
       updateHistogram(minYear);
       showline(cityData);
-      d3.select("#histogram").style("display", 'none');
-      d3.select("#birdview").style("display", 'none');
   };
 
   var slider = d3.sliderHorizontal()
@@ -367,11 +366,25 @@
     //sort data
     cityData.cities[year].sort(function(a,b) { return a.raw_pop - b.raw_pop; });
     
-    var cityBars = hist_g.selectAll('.bar').data(cityData.cities[year]);
+      var cityBars = hist_g.selectAll('.bar').data(cityData.cities[year]);
+      //defind color scale base on continent
+      var options = cityData.cities[year].map(function (d) { return d.continent; });
+      options = options.filter(function (item, pos) {
+          return options.indexOf(item) == pos;
+      });
+      //define config for color legend
+      let legend_bar_width = 40,
+          legend_bar_height = 20,
+          legend_y_pos = height_2 * .25,
+          legend_x_pos = width_2 - legend_bar_width,
+          legend_text_x_pos=legend_x_pos+legend_bar_width
 
+
+      console.log(options); 
     //define domains based on data
     x.domain([0, d3.max(cityData.cities[year], function(d) { return d.raw_pop; })]);
-    y.domain(cityData.cities[year].map(function(d) { return d.city; }));
+      y.domain(cityData.cities[year].map(function (d) { return d.city; }));
+      colorScale.domain(cityData.cities[year].map(function (d) { return d.continent; }));
 
     //cleanup old stuff:
     cityBars.exit().remove();
@@ -393,20 +406,45 @@
           .call(d3.axisLeft(y));
     
     // ENTER: append rects to svg based on data
-    cityBars.enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", 0)
-      .attr("y", function(d) { return y(d.city); })
-      .attr("height", y.bandwidth())
-      .attr("width", function(d) { return x(d.raw_pop); })
-      .style("fill", "#556b2f");
+      cityBars.enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", 0)
+          .attr("y", function (d) { return y(d.city); })
+          .attr("height", y.bandwidth())
+          .attr("width", function (d) { return x(d.raw_pop); })
+          .style("fill", function (d) { return colorScale(d.continent); });
 
     // UPDATE: update rects to svg based on data
     cityBars
       .attr("y", function(d) { return y(d.city); })
       .attr("height", y.bandwidth())
-      .attr("width", function(d) { return x(d.raw_pop); })
+          .attr("width", function (d) { return x(d.raw_pop); })
+
+   // ENTER: append rects to color legend base on set of continent
+      var legend = hist_g.selectAll(".legend")
+          .data(options)
+          .enter().append("g")
+          .attr("class", "legend")
+          .attr("transform", function (d, i) {
+              y_transition=legend_y_pos+i*legend_bar_height
+              return "translate(0," + y_transition + ")";
+          });
+   // UPDATE: update rects with detail info about color, position, size.
+      legend.append("rect")
+          .attr("x", legend_x_pos)
+          .attr("width", legend_bar_width)
+          .attr("height", legend_bar_height)
+          .style("fill", colorScale);
+   // UPDATE: update text to legend rects.
+      legend.append("text")
+          .attr("x", legend_text_x_pos)
+          .attr("class","legend-color-text")
+          .attr("y", 10)
+          .attr("dy", ".35em")
+          .style("text-anchor", "start")
+          .text(function (d) { return d; });
+
   }
 
   // Define which files we need to load:
