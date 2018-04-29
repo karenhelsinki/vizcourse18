@@ -371,7 +371,8 @@
       var options = cityData.cities[year].map(function (d) { return d.continent; });
       options = options.filter(function (item, pos) {
           return options.indexOf(item) == pos;
-      });
+      }).sort();
+      var legend = hist_g.selectAll(".legend").data(options)
       //define config for color legend
       let legend_bar_width = 40,
           legend_bar_height = 20,
@@ -384,11 +385,13 @@
     //define domains based on data
     x.domain([0, d3.max(cityData.cities[year], function(d) { return d.raw_pop; })]);
       y.domain(cityData.cities[year].map(function (d) { return d.city; }));
-      colorScale.domain(cityData.cities[year].map(function (d) { return d.continent; }));
+      colorScale.domain(cityData.cities[year].map(function (d) { return d.continent; }).sort());
 
     //cleanup old stuff:
-    cityBars.exit().remove();
-    hist_g.selectAll(".x-axis, .y-axis").remove();
+      cityBars.exit().remove();
+      legend.exit().remove();
+      legend.selectAll("rect,text").remove();
+      hist_g.selectAll(".x-axis, .y-axis").remove();
 
     //append x axis to svg
       hist_g.append("g")
@@ -416,20 +419,21 @@
           .style("fill", function (d) { return colorScale(d.continent); });
 
     // UPDATE: update rects to svg based on data
-    cityBars
-      .attr("y", function(d) { return y(d.city); })
-      .attr("height", y.bandwidth())
+      cityBars
+          .attr("y", function (d) { return y(d.city); })
+          .attr("height", y.bandwidth())
           .attr("width", function (d) { return x(d.raw_pop); })
+          .style("fill", function (d) { return colorScale(d.continent); });
 
    // ENTER: append rects to color legend base on set of continent
-      var legend = hist_g.selectAll(".legend")
-          .data(options)
+      legend
           .enter().append("g")
           .attr("class", "legend")
           .attr("transform", function (d, i) {
-              y_transition=legend_y_pos+i*legend_bar_height
+              y_transition = legend_y_pos + i * legend_bar_height
               return "translate(0," + y_transition + ")";
           });
+
    // UPDATE: update rects with detail info about color, position, size.
       legend.append("rect")
           .attr("x", legend_x_pos)
