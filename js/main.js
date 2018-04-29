@@ -23,19 +23,31 @@
       .attr("height", height);
 
   // Histogram stuff:
-  var histogram_svg = d3.select("#histogram")
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height)
+    var histogram_svg = d3.select("#histogram")
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+    // Bird view stuff:
+    var bird_svg = d3.select("#birdview")
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
 
-  let margin = {top: 25, right: 50, bottom: 25, left: 220},
-      width_2 = width - margin.left - margin.right,
-      height_2 = height - margin.top - margin.bottom,
-      hist_g = histogram_svg.append("g").attr("transform", "translate(" + margin.left + "," +margin.top + ")");
+    let margin_hist = { top: 25, right: 100, bottom: 25, left: 220 },
+        width_2 = width - margin_hist.left - margin_hist.right,
+        height_2 = height - margin_hist.top - margin_hist.bottom,
+        hist_g = histogram_svg.append("g").attr("transform", "translate(" + margin_hist.left + "," + margin_hist.top + ")"),
+        margin_bird = { top: 25, right: 150, bottom: 25, left: 100},
+        width_3 = width - margin_bird.left - margin_bird.right,
+        height_3 = height - margin_bird.top - margin_bird.bottom,
+        bird_g = bird_svg.append("g").attr("transform", "translate(" + margin_bird.left + "," + margin_bird.top + ")");
 
   //define scales for histogram
-  let x = d3.scaleLinear().rangeRound([0, width_2]),
-    y = d3.scaleBand().rangeRound([height_2, 0]).padding(0.2);
+    let x = d3.scaleLinear().rangeRound([0, width_2]),
+        y = d3.scaleBand().rangeRound([height_2, 0]).padding(0.2),
+        z = d3.scaleLinear().rangeRound([height_3, 0]),
+        t = d3.scaleLinear().rangeRound([0, width_3]);
+
 
   var hoverTooltip = function(d) {
     console.log('d', d, 'event', d3.event);
@@ -46,9 +58,8 @@
     var top_rate=d.raw_pop/top_pop*100
 
     // d3.event is the current event
-    var relative_pos=$("#global_view").position()
-    div.style.left = d3.event.offsetX +'px'; 
-    div.style.top = d3.event.offsetY  + 'px'; 
+    div.style.left = d3.event.layerX +'px'; 
+    div.style.top = d3.event.layerY  + 'px'; 
     div.innerHTML = "City: "+d.city+" - "+d.country+"<BR/>Raw Pop: "+d.raw_pop+" Millions"+"<BR/>Norm Pop :"+d.norm_pop+"<BR/>Raw Pop/Urban Pop :"+urban_rate.toFixed(2)+"%<BR/>Raw Pop/Top 30 Pop :"+top_rate.toFixed(2)+"%";
   };
 
@@ -130,7 +141,8 @@
         return Math.sqrt(Math.floor(200*d.raw_pop)/Math.PI)
       })
       .attr('fill', '#556b2f')
-      .on('mouseover', hoverTooltip);
+      .on('mouseover', hoverTooltip)
+      .on('mouseout', leaveTooltip);
 
     // Update:
     cityPoints
@@ -177,7 +189,10 @@
     showMap(countryData);
     updateCities(cityData, minYear);
     updateInfoLegend(yearData, minYear);
-    updateHistogram(minYear);
+      updateHistogram(minYear);
+      showline(cityData);
+      d3.select("#histogram").style("display", 'none');
+      d3.select("#birdview").style("display", 'none');
   };
 
   var slider = d3.sliderHorizontal()
@@ -223,6 +238,15 @@
     }
   }
 
+    var legend_styles = function (styles) {
+        return function (selection) {
+            for (var property in styles) {
+                selection
+                    .attr(property, styles[property]);
+            };
+        };
+    };
+
   d3.select('#nextYearBtn')
     .on('click', slideNext);
 
@@ -234,7 +258,12 @@
   d3.select('#map_button')
     .on('click', function(){
       d3.select("#map").style("display", 'block');
-      d3.select("#histogram").style("display", 'none');
+        d3.select("#histogram").style("display", 'none');
+        d3.select("#birdview").style("display", 'none');
+        d3.select("#legend").style("display", 'block');
+        d3.select("#map_button").style("background-color", "grey");
+        d3.select("#hist_button").style("background-color", "");
+        d3.select("#bird_button").style("background-color", "");
       d3.select("#legend").classed("left", true);
       d3.select("#legend").classed("right", false);
     });
@@ -242,11 +271,93 @@
   d3.select('#hist_button')
     .on('click', function(){
       d3.select("#map").style("display", 'none');
-      d3.select("#histogram").style("display", 'block');
+        d3.select("#histogram").style("display", 'block');
+        d3.select("#birdview").style("display", 'none');
+        d3.select("#legend").style("display", 'block');
+        d3.select("#map_button").style("background-color", "");
+        d3.select("#hist_button").style("background-color", "grey");
+        d3.select("#bird_button").style("background-color", "");
       d3.select("#legend").classed("left", false);
       d3.select("#legend").classed("right", true);
-    });
+        });
 
+    d3.select('#bird_button')
+        .on('click', function () {
+            d3.select("#map").style("display", 'none');
+            d3.select("#histogram").style("display", 'none');
+            d3.select("#birdview").style("display", 'block');
+            d3.select("#legend").style("display", 'none');
+            d3.select("#map_button").style("background-color", "");
+            d3.select("#hist_button").style("background-color", "");
+            d3.select("#bird_button").style("background-color", "grey");
+            d3.select("#legend").classed("left", false);
+            d3.select("#legend").classed("right", true);
+        });
+
+  // Line histogram
+    var line = function (year, pop, multiply) {
+        var obj = d3.line()
+            .x(function (d) { return t(+d[year]); })
+            .y(function (d) { return z(+d[pop] * multiply); });
+        return obj;
+    };
+
+    var showline = function (data) {
+        console.log('test', data);
+        yearData = data.years;
+        min_pop = d3.min(yearData, function (d) { return Math.min(+d.urban_pop, +d.top_pop / 1000); });
+        max_pop = d3.max(yearData, function (d) { return Math.max(+d.urban_pop, +d.top_pop / 1000); });
+        t.domain(d3.extent(yearData, function (d) { return +d.year; }));
+        z.domain([min_pop, max_pop]);
+
+        bird_g.append("g")
+            .attr("transform", "translate(0," + height_3 + ")")
+            .call(d3.axisBottom(t).tickFormat(d3.format("d")));
+
+        bird_g.append("g")
+            .call(d3.axisLeft(z))
+            .append("text")
+            .attr("fill", "#000")
+            .attr("transform", "rotate(-90)")
+            .attr("dy", "1.5em")
+            .text("Population (in billions)");
+
+        bird_g.append("path")
+            .datum(yearData)
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("stroke-width", 1.5)
+            .attr("d", line('year', 'urban_pop', 1))
+            .attr("dy", "1.5em");
+
+        bird_g.append("text")
+            .attr("transform", "translate(" + (width_3) + "," + z(yearData[yearData.length - 1].urban_pop) + ")")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "start")
+            .call(legend_styles({ "fill": "steelblue", "font-weight": "bold" }))
+            .text("Urban Pop");
+
+        bird_g.append("path")
+            .datum(yearData)
+            .attr("fill", "none")
+            .attr("stroke", "red")
+            .attr("stroke-linejoin", "round")
+            .attr("stroke-linecap", "round")
+            .attr("stroke-width", 1.5)
+            .attr("d", line('year', 'top_pop', 1 / 1000))
+            .attr("dy", "1.5em");
+
+        bird_g.append("text")
+            .attr("transform", "translate(" + (width_3) + "," + z(yearData[yearData.length - 1].top_pop / 1000) + ")")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "start")
+            .call(legend_styles({ "fill": "red", "font-weight": "bold" }))
+            .style("font-weight", "bold")
+            .text("Top Pop");
+
+    };
   // Horizontal histograms:
 
   var updateHistogram = function(year) {
@@ -265,15 +376,15 @@
     hist_g.selectAll(".x-axis, .y-axis").remove();
 
     //append x axis to svg
-    hist_g.append("g")
-      .attr("class", "x-axis")
-      .attr("transform", "translate(0," + height_2 + ")")
-      .call(d3.axisBottom(x))
-      .append("text")
-      .attr("y", 30)
-      .attr("x", 650)
-      .attr("dy", "0.5em")
-      .style("fill", "black")
+      hist_g.append("g")
+          .attr("class", "x-axis")
+          .attr("transform", "translate(0," + height_2 + ")")
+          .call(d3.axisBottom(x))
+          .append("text")
+          .attr("y", 30)
+          .attr("x", 650)
+          .attr("dy", "0.5em")
+          .call(legend_styles({ "fill": "black", "font-weight": "bold" }));
 
     //append y axis to svg
     hist_g.append("g")
