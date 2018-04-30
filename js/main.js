@@ -58,7 +58,11 @@
     var top_rate=d.raw_pop/top_pop*100
     div.style.left = d3.event.layerX +'px'; 
     div.style.top = d3.event.layerY  + 'px'; 
-    div.innerHTML = "City: "+d.city+" - "+d.country+"<BR/>Raw Pop: "+d.raw_pop+" Millions"+"<BR/>Norm Pop :"+d.norm_pop+"<BR/>Raw Pop/Urban Pop :"+urban_rate.toFixed(2)+"%<BR/>Raw Pop/Top 30 Pop :"+top_rate.toFixed(2)+"%";
+    div.innerHTML = "<b>City:</b> "+d.city+"<br/><b>Country:</b> "
+                            +d.country+"<BR/><b>Pop:</b> "
+                            +d.raw_pop+" Millions"+"<BR/><b>Norm. Pop:</b> "
+                            +d.norm_pop+"<BR/><b>Pop/World Urban Pop:</b> "
+                            +urban_rate.toFixed(2)+"%<BR/><b>Pop/Top 30 Pop:</b> "+top_rate.toFixed(2)+"%";
   };
 
   var leaveTooltip = function(d) {
