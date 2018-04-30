@@ -431,11 +431,11 @@
             .on("mouseout",leaveDottip);
         //append legend for urban line
         bird_g.append("text")
-            .attr("transform", "translate(" + (width_3) + "," + z(yearData[yearData.length - 1].urban_pop) + ")")
+            .attr("transform", "translate(" + (width_3 + 10) + "," + z(yearData[yearData.length - 1].urban_pop) + ")")
             .attr("dy", ".35em")
             .attr("text-anchor", "start")
             .call(legend_styles({ "fill": "steelblue", "font-weight": "bold" }))
-            .text("Urban Pop");
+            .text("Global urban population");
         //append line for top pop
         bird_g.append("path")
             .datum(yearData)
@@ -457,12 +457,12 @@
             .on("mouseout", leaveDottip);
         //append legend for top pop
         bird_g.append("text")
-            .attr("transform", "translate(" + (width_3) + "," + z(yearData[yearData.length - 1].top_pop / 1000) + ")")
+            .attr("transform", "translate(" + (width_3 + 10) + "," + z(yearData[yearData.length - 1].top_pop / 1000) + ")")
             .attr("dy", ".35em")
             .attr("text-anchor", "start")
             .call(legend_styles({ "fill": "red", "font-weight": "bold" }))
             .style("font-weight", "bold")
-            .text("Top Pop");
+            .text("Top 30 cities population");
 
         dot_add.exit().remove();
 
