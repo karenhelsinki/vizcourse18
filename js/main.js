@@ -49,16 +49,13 @@
         z = d3.scaleLinear().rangeRound([height_3, 0]),
         t = d3.scaleLinear().rangeRound([0, width_3]);
 
-
+//tooltip for map
   var hoverTooltip = function(d) {
-    console.log('d', d, 'event', d3.event);
     var div = document.getElementById('tooltip');
     var urban_pop=Number($("#urbanPopNum").text())*1000
     var top_pop=Number($("#topPopNum").text())
     var urban_rate=d.raw_pop/urban_pop*100
     var top_rate=d.raw_pop/top_pop*100
-
-    // d3.event is the current event
     div.style.left = d3.event.layerX +'px'; 
     div.style.top = d3.event.layerY  + 'px'; 
     div.innerHTML = "City: "+d.city+" - "+d.country+"<BR/>Raw Pop: "+d.raw_pop+" Millions"+"<BR/>Norm Pop :"+d.norm_pop+"<BR/>Raw Pop/Urban Pop :"+urban_rate.toFixed(2)+"%<BR/>Raw Pop/Top 30 Pop :"+top_rate.toFixed(2)+"%";
@@ -67,7 +64,43 @@
   var leaveTooltip = function(d) {
     $("#tooltip").html('');
     $("#tooltip").attr('style','');
-  };
+    };
+//tooltip for histogram color legend
+    var hoverLegendtip = function (d) {
+        var div = $('#Legendtip')
+        var year=$('#legend>h1').text()
+        div.attr("style", "left:" + d3.event.layerX + "px;top:" + d3.event.layerY + "px;");
+        html_string = '<table><thead><tr><th>City</th><th>Raw Pop</th><th>Nom Pop</th></tr></thead><tbody>';
+        data = cityData.cities[year];
+        data.forEach(
+            function (item) {
+                if (item.continent == d) {
+                    html_string = html_string + '<tr><td>' + item.city + '</td><td>' + item.raw_pop + '</td><td>' + item.norm_pop + '</td></tr>';
+                };
+            }
+        );
+        html_string = html_string + '</tbody></table>';
+        div.html(html_string);
+    };
+
+    var leaveLegendtip = function () {
+        $("#Legendtip").html('');
+        $("#Legendtip").attr('style', '');
+    };
+
+//tooltip for line graph
+    var hoverDottip = function (d,event,multiply) {
+        div = $('#Dottip');
+        div.attr("style", "left:" + d3.event.layerX + "px;top:" + d3.event.layerY + "px;");
+        Rate_Num = d[event] / d.world_pop * multiply * 100;
+        div.html("% To World Population: " + Rate_Num.toFixed(2)+"%");
+    };
+
+    var leaveDottip = function (d) {
+        $("#Dottip").html('');
+        $("#Dottip").attr('style', '');
+    };
+
 
   var showMap = function(data) {
     //console.log('theworld', data);
@@ -157,6 +190,53 @@
         return Math.sqrt(Math.floor(200*d.raw_pop)/Math.PI)
       })
   };
+    //Update color legend on histogram
+    var updateColorlegend = function (data) {
+        var options = data.map(function (d) { return d.continent; });
+        options = options.filter(function (item, pos) {
+            return options.indexOf(item) == pos;
+        }).sort();
+        var legend = hist_g.selectAll(".legend").data(options);
+        //define config for color legend
+        let legend_bar_width = 40,
+            legend_bar_height = 20,
+            legend_y_pos = height_2 * .25,
+            legend_x_pos = width_2 - legend_bar_width,
+            legend_text_x_pos = legend_x_pos + legend_bar_width;
+        //clean old stuffs
+        legend.selectAll("rect,text").remove();
+        // ENTER: append rects to color legend base on set of continent
+
+        legend.enter()
+            .append("g")
+            .attr("class", "legend")
+            .attr("transform", function (d, i) {
+                y_transition = legend_y_pos + i * legend_bar_height
+                return "translate(0," + y_transition + ")";
+            });
+        // UPDATE: update rect to legend.
+
+        legend.append("rect")
+            .attr("class", "legend-color-text")
+            .attr("x", legend_x_pos)
+            .attr("width", legend_bar_width)
+            .attr("height", legend_bar_height)
+            .style("fill", colorScale)
+            .on('mouseover', hoverLegendtip)
+            .on('mouseout', leaveLegendtip);
+
+        // UPDATE: update text to legend rects.
+        legend.append("text")
+            .attr("x", legend_text_x_pos)
+            .attr("class", "legend-color-text")
+            .attr("y", 10)
+            .attr("dy", ".35em")
+            .style("text-anchor", "start")
+            .text(function (d) { return d; });
+
+        legend.exit().remove();
+
+    };
 
   var updateInfoLegend = function(data, year) {
     d3.select("#legend > h1").text(year);
@@ -189,9 +269,11 @@
     //console.log('cityData', cityData);
     showMap(countryData);
     updateCities(cityData, minYear);
-    updateInfoLegend(yearData, minYear);
+      updateInfoLegend(yearData, minYear);
+      updateColorlegend(cityData.cities[minYear]);
+      updateColorlegend(cityData.cities[minYear]);
       updateHistogram(minYear);
-      showline(cityData);
+    showline(cityData);
   };
 
   var slider = d3.sliderHorizontal()
@@ -204,7 +286,8 @@
     .tickFormat(d3.format(".0f"))
     .on('onchange', val => {
       updateCities(cityData, val);
-      updateInfoLegend(yearData, val);
+        updateInfoLegend(yearData, val);
+        updateColorlegend(cityData.cities[val]);
       updateHistogram(val);
     })
 
@@ -275,6 +358,7 @@
         d3.select("#birdview").style("display", 'none');
         d3.select("#legend").style("display", 'block');
         d3.select("#sliderBox").style("display", 'block');
+        d3.select(".legend").style("display", 'block');
         d3.select("#map_button").style("background-color", "");
         d3.select("#hist_button").style("background-color", "grey");
         d3.select("#bird_button").style("background-color", "");
@@ -303,18 +387,22 @@
             .y(function (d) { return z(+d[pop] * multiply); });
         return obj;
     };
-
+    //show line graph for birdview
     var showline = function (data) {
-        yearData = data.years.filter(x=>x.year >= minYear && x.year <= maxYear);
+        //filter year data minYear-maxYear
+        yearData = data.years.filter(x => x.year >= minYear && x.year <= maxYear);
+        //get extent for y axis (z domain)
         min_pop = d3.min(yearData, function (d) { return Math.min(+d.urban_pop, +d.top_pop / 1000); });
         max_pop = d3.max(yearData, function (d) { return Math.max(+d.urban_pop, +d.top_pop / 1000); });
+        //asign domain to axis
         t.domain(d3.extent(yearData, function (d) { return +d.year; }));
         z.domain([min_pop, max_pop]);
-
+        var dot_add=bird_g.selectAll("circle").data(yearData)
+        //append x axis
         bird_g.append("g")
             .attr("transform", "translate(0," + height_3 + ")")
             .call(d3.axisBottom(t).tickFormat(d3.format("d")));
-
+        //append y axis
         bird_g.append("g")
             .call(d3.axisLeft(z))
             .append("text")
@@ -322,7 +410,7 @@
             .attr("transform", "rotate(-90)")
             .attr("dy", "1.5em")
             .text("Population (in billions)");
-
+        //append line for urban pop
         bird_g.append("path")
             .datum(yearData)
             .attr("fill", "none")
@@ -332,14 +420,23 @@
             .attr("stroke-width", 1.5)
             .attr("d", line('year', 'urban_pop', 1))
             .attr("dy", "1.5em");
-
+        //append dot for urban po
+        dot_add.enter()
+            .append("circle")
+            .attr("r", 5)
+            .attr("fill", "steelblue")
+            .attr("cx", function (d) { return t(d.year); })
+            .attr("cy", function (d) { return z(+d.urban_pop); })
+            .on("mouseover", function (d) { hoverDottip(d,"urban_pop", 1); })
+            .on("mouseout",leaveDottip);
+        //append legend for urban line
         bird_g.append("text")
             .attr("transform", "translate(" + (width_3) + "," + z(yearData[yearData.length - 1].urban_pop) + ")")
             .attr("dy", ".35em")
             .attr("text-anchor", "start")
             .call(legend_styles({ "fill": "steelblue", "font-weight": "bold" }))
             .text("Urban Pop");
-
+        //append line for top pop
         bird_g.append("path")
             .datum(yearData)
             .attr("fill", "none")
@@ -349,7 +446,16 @@
             .attr("stroke-width", 1.5)
             .attr("d", line('year', 'top_pop', 1 / 1000))
             .attr("dy", "1.5em");
-
+        //append dot for top pop
+        dot_add.enter()
+            .append("circle")
+            .attr("r", 5)
+            .attr("fill","red")
+            .attr("cx", function (d) { return t(d.year); })
+            .attr("cy", function (d) { return z(d.top_pop / 1000); })
+            .on("mouseover", function (d) { hoverDottip(d, "top_pop", 1/1000); })
+            .on("mouseout", leaveDottip);
+        //append legend for top pop
         bird_g.append("text")
             .attr("transform", "translate(" + (width_3) + "," + z(yearData[yearData.length - 1].top_pop / 1000) + ")")
             .attr("dy", ".35em")
@@ -357,6 +463,8 @@
             .call(legend_styles({ "fill": "red", "font-weight": "bold" }))
             .style("font-weight", "bold")
             .text("Top Pop");
+
+        dot_add.exit().remove();
 
     };
   // Horizontal histograms:
@@ -367,21 +475,7 @@
     cityData.cities[year].sort(function(a,b) { return a.raw_pop - b.raw_pop; });
     
       var cityBars = hist_g.selectAll('.bar').data(cityData.cities[year]);
-      //defind color scale base on continent
-      var options = cityData.cities[year].map(function (d) { return d.continent; });
-      options = options.filter(function (item, pos) {
-          return options.indexOf(item) == pos;
-      }).sort();
-      var legend = hist_g.selectAll(".legend").data(options)
-      //define config for color legend
-      let legend_bar_width = 40,
-          legend_bar_height = 20,
-          legend_y_pos = height_2 * .25,
-          legend_x_pos = width_2 - legend_bar_width,
-          legend_text_x_pos=legend_x_pos+legend_bar_width
 
-
-      console.log(options); 
     //define domains based on data
     x.domain([0, d3.max(cityData.cities[year], function(d) { return d.raw_pop; })]);
       y.domain(cityData.cities[year].map(function (d) { return d.city; }));
@@ -389,8 +483,6 @@
 
     //cleanup old stuff:
       cityBars.exit().remove();
-      legend.exit().remove();
-      legend.selectAll("rect,text").remove();
       hist_g.selectAll(".x-axis, .y-axis").remove();
 
     //append x axis to svg
@@ -424,31 +516,6 @@
           .attr("height", y.bandwidth())
           .attr("width", function (d) { return x(d.raw_pop); })
           .style("fill", function (d) { return colorScale(d.continent); });
-
-   // ENTER: append rects to color legend base on set of continent
-      legend
-          .enter().append("g")
-          .attr("class", "legend")
-          .attr("transform", function (d, i) {
-              y_transition = legend_y_pos + i * legend_bar_height
-              return "translate(0," + y_transition + ")";
-          });
-
-   // UPDATE: update rects with detail info about color, position, size.
-      legend.append("rect")
-          .attr("x", legend_x_pos)
-          .attr("width", legend_bar_width)
-          .attr("height", legend_bar_height)
-          .style("fill", colorScale);
-   // UPDATE: update text to legend rects.
-      legend.append("text")
-          .attr("x", legend_text_x_pos)
-          .attr("class","legend-color-text")
-          .attr("y", 10)
-          .attr("dy", ".35em")
-          .style("text-anchor", "start")
-          .text(function (d) { return d; });
-
   }
 
   // Define which files we need to load:

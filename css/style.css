@@ -69,6 +69,29 @@ circle:hover {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
+#Legendtip {
+  position: absolute;
+  background: rgba(0,153,76,0.8);
+  color:white;
+  font-size: 12px;
+  padding:5px;
+  top:-150px;
+  left:-150px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+
+#Dottip {
+  position: absolute;
+  background: rgba(0,153,76,0.8);
+  color:white;
+  font-size: 12px;
+  padding:5px;
+  top:-150px;
+  left:-150px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
 #sliderBox {
   display: block;
   position: relative;
@@ -117,7 +140,6 @@ circle:hover {
    border-bottom: 2px solid #ddd;
 }
 
-/* Histogram styles */
 #histogram {
   display: none;
 }
@@ -128,8 +150,8 @@ circle:hover {
 
 text.legend-color-text {
   font-weight: 600; 
-  fill: #4e5ecf;
-  font-size: 14px; 
+  fill: #00000;
+  font-size: 14px;
 }
 
 .y-axis>g>text {
